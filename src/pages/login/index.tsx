@@ -26,6 +26,13 @@ const LoginPage = () => {
         body: JSON.stringify({ username, password }),
       });
 
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        setError('Terjadi kesalahan server. Silakan coba lagi nanti.');
+        console.error('Response is not JSON:', response);
+        return;
+      }
+
       const data = await response.json();
 
       if (!response.ok) {
@@ -39,7 +46,7 @@ const LoginPage = () => {
       // Redirect ke dashboard
       router.push('/dashboard');
     } catch (err) {
-      setError('Terjadi kesalahan saat login');
+      setError('Terjadi kesalahan saat login. Periksa koneksi internet Anda.');
       console.error('Login error:', err);
     } finally {
       setLoading(false);

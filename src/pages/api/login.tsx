@@ -23,9 +23,16 @@ export default async function handler(
         .json({ message: 'Username dan password harus diisi' });
     }
 
+    // Validate input type
+    if (typeof username !== 'string' || typeof password !== 'string') {
+      return res
+        .status(400)
+        .json({ message: 'Username dan password harus berupa teks' });
+    }
+
     // Find user by username
     const user = await prisma.user.findUnique({
-      where: { username },
+      where: { username: username.trim() },
     });
 
     if (!user) {
@@ -49,6 +56,20 @@ export default async function handler(
     });
   } catch (error) {
     console.error('Login error:', error);
+
+    // Check if it's a database connection error
+    if (error instanceof Error) {
+      if (
+        error.message.includes('ECONNREFUSED') ||
+        error.message.includes('connect')
+      ) {
+        return res.status(503).json({
+          message:
+            'Database tidak dapat diakses. Periksa koneksi database Anda.',
+        });
+      }
+    }
+
     return res.status(500).json({ message: 'Terjadi kesalahan server' });
   } finally {
     await prisma.$disconnect();
