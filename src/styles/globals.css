@@ -1,0 +1,20 @@
+@import 'tailwindcss';
+
+/* Custom global styles can be added here */
+.animated-bg {
+  background: linear-gradient(-45deg, #023616, #046826, #2e8605, #033105);
+  background-size: 400% 400%;
+  animation: gradientMove 15s ease infinite;
+}
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
