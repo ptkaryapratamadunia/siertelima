@@ -10,5 +10,24 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
+
+enum Role {
+  TopAdmin  @map("Top Admin")
+  Admin     @map("Admin")
+  User      @map("User")
+  Guest     @map("Guest")
+}
+
+model User {
+  id       Int     @id @default(autoincrement()) @map("user_id")
+  username String  @unique @db.VarChar(80)
+  password String  @db.VarChar(180)
+  role     Role    @default(User)
+  regime   DateTime @default(now()) @updatedAt @map("regime")
+
+  @@map("user")
+}
+
